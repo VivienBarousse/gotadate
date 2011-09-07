@@ -29,7 +29,7 @@ public class DateTokenizerTest extends TestCase {
     public DateTokenizerTest() {
     }
     
-    public void testBasicBehaviour() throws IOException {
+    public void testBasicBehaviour() throws TokenizerException {
         StringReader reader = new StringReader("abc def 123");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
@@ -39,7 +39,7 @@ public class DateTokenizerTest extends TestCase {
         assertEquals(null, tokenizer.next());
     }
     
-    public void testSpacesAtEOF() throws IOException {
+    public void testSpacesAtEOF() throws TokenizerException {
         StringReader reader = new StringReader("abc def 123     ");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
@@ -49,7 +49,7 @@ public class DateTokenizerTest extends TestCase {
         assertEquals(null, tokenizer.next());
     }
     
-    public void testSpacesBeforeFirst() throws IOException {
+    public void testSpacesBeforeFirst() throws TokenizerException {
         StringReader reader = new StringReader("     abc def 123");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
@@ -59,7 +59,7 @@ public class DateTokenizerTest extends TestCase {
         assertEquals(null, tokenizer.next());
     }
     
-    public void testSpecialChars() throws IOException {
+    public void testSpecialChars() throws TokenizerException {
         StringReader reader = new StringReader("...!@#");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         

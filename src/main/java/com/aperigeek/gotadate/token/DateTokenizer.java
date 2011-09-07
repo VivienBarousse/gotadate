@@ -35,13 +35,15 @@ public class DateTokenizer implements Tokenizer {
 
     private int ch;
 
-    public DateTokenizer(Reader reader) throws IOException {
+    public DateTokenizer(Reader reader) throws TokenizerException {
         this.reader = reader;
         
         try {
             readChar();
         } catch (EOFException ex) {
             // Will be catched at next call to readChar()
+        } catch (IOException ex) {
+            throw new TokenizerException("Unable to read from source", ex);
         }
     }
 
