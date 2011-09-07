@@ -61,57 +61,61 @@ public class DateTokenizer implements Tokenizer {
         ch = (char) next;
     }
 
-    public Token<? extends Object> next() throws IOException {
+    public Token<? extends Object> next() throws TokenizerException {
         try {
-            while (Character.isSpaceChar(ch)) {
-                readChar();
+            try {
+                while (Character.isSpaceChar(ch)) {
+                    readChar();
+                }
+            } catch (EOFException ex) {
+                // Continue, will fail later
             }
-        } catch (EOFException ex) {
-            // Continue, will fail later
-        }
-        
-        if (ch == -1) {
-            return null;
-        }
 
-        StringBuilder builder = new StringBuilder();
+            if (ch == -1) {
+                return null;
+            }
 
-        int tokenCol = this.col,
-                tokenLine = this.line;
-        
-        TokenType type = TokenType.EMPTY;
+            StringBuilder builder = new StringBuilder();
 
-        try {
-            if (Character.isDigit(ch)) {
-                type = TokenType.NUMBER;
-                while (Character.isDigit(ch)) {
+            int tokenCol = this.col,
+                    tokenLine = this.line;
+
+            TokenType type = TokenType.EMPTY;
+
+            try {
+                if (Character.isDigit(ch)) {
+                    type = TokenType.NUMBER;
+                    while (Character.isDigit(ch)) {
+                        builder.append((char) ch);
+                        readChar();
+                    }
+                } else if (Character.isLetter(ch)) {
+                    type = TokenType.STRING;
+                    while (Character.isLetter(ch)) {
+                        builder.append((char) ch);
+                        readChar();
+                    }
+                } else {
+                    type = TokenType.SEPARATOR;
                     builder.append((char) ch);
                     readChar();
                 }
-            } else if (Character.isLetter(ch)) {
-                type = TokenType.STRING;
-                while (Character.isLetter(ch)) {
-                    builder.append((char) ch);
-                    readChar();
-                }
-            } else {
-                type = TokenType.SEPARATOR;
-                builder.append((char) ch);
-                readChar();
+            } catch (EOFException ex) {
+                // Continue, will fail at next call
             }
-        } catch (EOFException ex) {
-            // Continue, will fail at next call
+
+            Object value = builder.toString();
+            if (type == TokenType.NUMBER) {
+                Integer intValue = Integer.valueOf(value.toString());
+                return new Token<Number>(type, intValue, tokenLine, tokenCol);
+            } else if (type == TokenType.SEPARATOR) {
+                Character chValue = value.toString().charAt(0);
+                return new Token<Character>(type, chValue, tokenLine, tokenCol);
+            }
+            return new Token<Object>(type, value, tokenLine, tokenCol);
+        } catch (IOException ex) {
+            throw new TokenizerException("Unable to read from source", ex);
         }
-        
-        Object value = builder.toString();
-        if (type == TokenType.NUMBER) {
-            Integer intValue = Integer.valueOf(value.toString());
-            return new Token<Number>(type, intValue, tokenLine, tokenCol);
-        } else if (type == TokenType.SEPARATOR) {
-            Character chValue = value.toString().charAt(0);
-            return new Token<Character>(type, chValue, tokenLine, tokenCol);
-        }
-        return new Token<Object>(type, value, tokenLine, tokenCol);
     }
 
 }

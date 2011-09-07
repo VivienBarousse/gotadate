@@ -20,8 +20,21 @@ package com.aperigeek.gotadate.token;
  *
  * @author Vivien Barousse
  */
-public interface Tokenizer {
-    
-    public Token<? extends Object> next() throws TokenizerException;
+public class TokenizerException extends Exception {
+
+    public TokenizerException() {
+    }
+
+    public TokenizerException(String msg) {
+        super(msg);
+    }
+
+    public TokenizerException(Throwable cause) {
+        super(cause);
+    }
+
+    public TokenizerException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
     
 }

@@ -19,7 +19,7 @@ package com.aperigeek.gotadate.parser;
 import com.aperigeek.gotadate.token.DateTokenizer;
 import com.aperigeek.gotadate.token.Token;
 import com.aperigeek.gotadate.token.TokenType;
-import java.io.IOException;
+import com.aperigeek.gotadate.token.TokenizerException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -47,7 +47,7 @@ public class DateParser {
     protected void next() throws DateParseException {
         try {
             token = tokenizer.next();
-        } catch (IOException ex) {
+        } catch (TokenizerException ex) {
             throw new DateParseException("Unable to read from source", ex);
         }
     }
