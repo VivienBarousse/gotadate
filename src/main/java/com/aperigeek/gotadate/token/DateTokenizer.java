@@ -25,7 +25,7 @@ import java.io.Reader;
  * 
  * @author Vivien Barousse
  */
-public class DateTokenizer {
+public class DateTokenizer implements Tokenizer {
 
     private Reader reader;
 
