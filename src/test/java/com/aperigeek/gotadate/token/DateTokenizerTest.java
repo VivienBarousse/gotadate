@@ -16,9 +16,9 @@
  */
 package com.aperigeek.gotadate.token;
 
+import com.aperigeek.gotadate.TestCase;
 import java.io.IOException;
 import java.io.StringReader;
-import junit.framework.TestCase;
 
 /**
  *
@@ -33,9 +33,9 @@ public class DateTokenizerTest extends TestCase {
         StringReader reader = new StringReader("abc def 123");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
-        assertEquals("abc", tokenizer.next().getValue());
-        assertEquals("def", tokenizer.next().getValue());
-        assertEquals(123, tokenizer.next().getValue());
+        assertToken("abc", tokenizer.next());
+        assertToken("def", tokenizer.next());
+        assertToken(123, tokenizer.next());
         assertEquals(null, tokenizer.next());
     }
     
@@ -43,9 +43,9 @@ public class DateTokenizerTest extends TestCase {
         StringReader reader = new StringReader("abc def 123     ");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
-        assertEquals("abc", tokenizer.next().getValue());
-        assertEquals("def", tokenizer.next().getValue());
-        assertEquals(123, tokenizer.next().getValue());
+        assertToken("abc", tokenizer.next());
+        assertToken("def", tokenizer.next());
+        assertToken(123, tokenizer.next());
         assertEquals(null, tokenizer.next());
     }
     
@@ -53,9 +53,9 @@ public class DateTokenizerTest extends TestCase {
         StringReader reader = new StringReader("     abc def 123");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
-        assertEquals("abc", tokenizer.next().getValue());
-        assertEquals("def", tokenizer.next().getValue());
-        assertEquals(123, tokenizer.next().getValue());
+        assertToken("abc", tokenizer.next());
+        assertToken("def", tokenizer.next());
+        assertToken(123, tokenizer.next());
         assertEquals(null, tokenizer.next());
     }
     
@@ -63,12 +63,12 @@ public class DateTokenizerTest extends TestCase {
         StringReader reader = new StringReader("...!@#");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
-        assertEquals('.', tokenizer.next().getValue());
-        assertEquals('.', tokenizer.next().getValue());
-        assertEquals('.', tokenizer.next().getValue());
-        assertEquals('!', tokenizer.next().getValue());
-        assertEquals('@', tokenizer.next().getValue());
-        assertEquals('#', tokenizer.next().getValue());
+        assertToken('.', tokenizer.next());
+        assertToken('.', tokenizer.next());
+        assertToken('.', tokenizer.next());
+        assertToken('!', tokenizer.next());
+        assertToken('@', tokenizer.next());
+        assertToken('#', tokenizer.next());
         assertEquals(null, tokenizer.next());
     }
     
