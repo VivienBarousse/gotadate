@@ -40,4 +40,48 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(88, 9, 23), parsed.get(0));
     }
     
+    public void testDateWithTextBefore() throws IOException, DateParseException {
+        String date = "abc def 23/10/1988";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testDateWithTextAfter() throws IOException, DateParseException {
+        String date = "23/10/1988 abc def";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testDateWithTextBeforeAndAfter() throws IOException, DateParseException {
+        String date = "abc 23/10/1988 def";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testObviousMMDDYYYY() throws IOException, DateParseException {
+        String date = "10/23/1988";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
 }
