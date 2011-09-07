@@ -19,8 +19,6 @@ package com.aperigeek.gotadate.token;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Splits the given Reader into Token that can be recognized by the parser.
@@ -43,7 +41,7 @@ public class DateTokenizer {
         try {
             readChar();
         } catch (EOFException ex) {
-            Logger.getLogger(DateTokenizer.class.getName()).log(Level.SEVERE, null, ex);
+            // Will be catched at next call to readChar()
         }
     }
 
