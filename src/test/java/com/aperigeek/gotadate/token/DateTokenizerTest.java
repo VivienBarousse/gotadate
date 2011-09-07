@@ -35,7 +35,7 @@ public class DateTokenizerTest extends TestCase {
         
         assertEquals("abc", tokenizer.next().getValue());
         assertEquals("def", tokenizer.next().getValue());
-        assertEquals("123", tokenizer.next().getValue());
+        assertEquals(123, tokenizer.next().getValue());
         assertEquals(null, tokenizer.next());
     }
     
@@ -45,7 +45,7 @@ public class DateTokenizerTest extends TestCase {
         
         assertEquals("abc", tokenizer.next().getValue());
         assertEquals("def", tokenizer.next().getValue());
-        assertEquals("123", tokenizer.next().getValue());
+        assertEquals(123, tokenizer.next().getValue());
         assertEquals(null, tokenizer.next());
     }
     
@@ -55,7 +55,7 @@ public class DateTokenizerTest extends TestCase {
         
         assertEquals("abc", tokenizer.next().getValue());
         assertEquals("def", tokenizer.next().getValue());
-        assertEquals("123", tokenizer.next().getValue());
+        assertEquals(123, tokenizer.next().getValue());
         assertEquals(null, tokenizer.next());
     }
     
@@ -63,12 +63,12 @@ public class DateTokenizerTest extends TestCase {
         StringReader reader = new StringReader("...!@#");
         DateTokenizer tokenizer = new DateTokenizer(reader);
         
-        assertEquals(".", tokenizer.next().getValue());
-        assertEquals(".", tokenizer.next().getValue());
-        assertEquals(".", tokenizer.next().getValue());
-        assertEquals("!", tokenizer.next().getValue());
-        assertEquals("@", tokenizer.next().getValue());
-        assertEquals("#", tokenizer.next().getValue());
+        assertEquals('.', tokenizer.next().getValue());
+        assertEquals('.', tokenizer.next().getValue());
+        assertEquals('.', tokenizer.next().getValue());
+        assertEquals('!', tokenizer.next().getValue());
+        assertEquals('@', tokenizer.next().getValue());
+        assertEquals('#', tokenizer.next().getValue());
         assertEquals(null, tokenizer.next());
     }
     

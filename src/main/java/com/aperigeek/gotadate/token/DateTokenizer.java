@@ -63,7 +63,7 @@ public class DateTokenizer {
         ch = (char) next;
     }
 
-    public Token next() throws IOException {
+    public Token<? extends Object> next() throws IOException {
         try {
             while (Character.isSpaceChar(ch)) {
                 readChar();
@@ -80,19 +80,24 @@ public class DateTokenizer {
 
         int tokenCol = this.col,
                 tokenLine = this.line;
+        
+        TokenType type = TokenType.EMPTY;
 
         try {
             if (Character.isDigit(ch)) {
+                type = TokenType.NUMBER;
                 while (Character.isDigit(ch)) {
                     builder.append((char) ch);
                     readChar();
                 }
             } else if (Character.isLetter(ch)) {
+                type = TokenType.STRING;
                 while (Character.isLetter(ch)) {
                     builder.append((char) ch);
                     readChar();
                 }
             } else {
+                type = TokenType.SEPARATOR;
                 builder.append((char) ch);
                 readChar();
             }
@@ -100,7 +105,15 @@ public class DateTokenizer {
             // Continue, will fail at next call
         }
         
-        return new Token(builder.toString(), tokenLine, tokenCol);
+        Object value = builder.toString();
+        if (type == TokenType.NUMBER) {
+            Integer intValue = Integer.valueOf(value.toString());
+            return new Token<Number>(type, intValue, tokenLine, tokenCol);
+        } else if (type == TokenType.SEPARATOR) {
+            Character chValue = value.toString().charAt(0);
+            return new Token<Character>(type, chValue, tokenLine, tokenCol);
+        }
+        return new Token<Object>(type, value, tokenLine, tokenCol);
     }
 
 }

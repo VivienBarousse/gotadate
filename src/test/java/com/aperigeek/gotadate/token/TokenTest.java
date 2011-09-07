@@ -25,7 +25,8 @@ import junit.framework.TestCase;
 public class TokenTest extends TestCase {
     
     public void testAccessors() {
-        Token token = new Token("abc", 12, 42);
+        Token token = new Token(TokenType.STRING, "abc", 12, 42);
+        assertEquals(TokenType.STRING, token.getType());
         assertEquals("abc", token.getValue());
         assertEquals(12, token.getLine());
         assertEquals(42, token.getCol());

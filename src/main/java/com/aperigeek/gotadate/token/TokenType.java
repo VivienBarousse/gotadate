@@ -20,37 +20,11 @@ package com.aperigeek.gotadate.token;
  *
  * @author Vivien Barousse
  */
-public class Token<T> {
+public enum TokenType {
     
-    private TokenType type;
-    
-    private T value;
-    
-    private int line;
-    
-    private int col;
-
-    public Token(TokenType type, T value, int line, int col) {
-        this.type = type;
-        this.value = value;
-        this.line = line;
-        this.col = col;
-    }
-
-    public TokenType getType() {
-        return type;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public T getValue() {
-        return value;
-    }
+    EMPTY,
+    STRING,
+    NUMBER,
+    SEPARATOR;
     
 }
