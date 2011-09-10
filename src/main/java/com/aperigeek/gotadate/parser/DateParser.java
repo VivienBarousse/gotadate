@@ -113,7 +113,7 @@ public class DateParser {
     }
 
     protected void doCheckType(TokenType type) throws UnexpectedTokenException {
-        if (token.getType() != type) {
+        if (token == null || token.getType() != type) {
             throw new UnexpectedTokenException();
         }
     }
