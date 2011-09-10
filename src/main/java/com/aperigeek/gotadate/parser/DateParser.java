@@ -16,6 +16,7 @@
  */
 package com.aperigeek.gotadate.parser;
 
+import com.aperigeek.gotadate.parser.la.LookAheadTable;
 import com.aperigeek.gotadate.token.DateTokenizer;
 import com.aperigeek.gotadate.token.Token;
 import com.aperigeek.gotadate.token.TokenType;
@@ -31,22 +32,20 @@ import java.util.List;
  */
 public class DateParser {
 
-    private DateTokenizer tokenizer;
+    private LookAheadTable next;
 
     private Token token;
-
-    private Token next;
 
     private List<Date> parsed = new ArrayList<Date>();
 
     public DateParser(DateTokenizer tokenizer) throws DateParseException {
-        this.tokenizer = tokenizer;
+        this.next = new LookAheadTable(tokenizer);
         next();
     }
 
     protected void next() throws DateParseException {
         try {
-            token = tokenizer.next();
+            token = next.pop();
         } catch (TokenizerException ex) {
             throw new DateParseException("Unable to read from source", ex);
         }
