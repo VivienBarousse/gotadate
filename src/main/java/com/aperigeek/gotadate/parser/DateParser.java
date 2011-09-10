@@ -115,8 +115,10 @@ public class DateParser {
         ls[0] = getInt();
         check(':');
         ls[1] = getInt();
-        check(':');
-        ls[2] = getInt();
+        if (isToken(':')) {
+            check(':');
+            ls[2] = getInt();
+        }
 
         Date date = new Date(0, 0, 1, ls[0], ls[1], ls[2]);
         parsed.add(date);
