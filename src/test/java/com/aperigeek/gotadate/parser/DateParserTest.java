@@ -106,5 +106,4 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(0, 0, 1, 23, 10, 0), parsed.get(0));
     }
     
-    
 }
