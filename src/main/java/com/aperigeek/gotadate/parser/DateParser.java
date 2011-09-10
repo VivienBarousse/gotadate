@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -105,8 +107,8 @@ public class DateParser {
             ls[0] = tmp;
         }
 
-        Date date = new Date(ls[2] - 1900, ls[1] - 1, ls[0]);
-        parsed.add(date);
+        LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
+        parsed.add(date.toDate());
     }
     
     protected void parseTime() throws DateParseException, UnexpectedTokenException {
@@ -120,8 +122,8 @@ public class DateParser {
             ls[2] = getInt();
         }
 
-        Date date = new Date(0, 0, 1, ls[0], ls[1], ls[2]);
-        parsed.add(date);
+        LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
+        parsed.add(time.toDateTimeToday().toDate());
     }
     
     protected boolean isToken(char ch) {

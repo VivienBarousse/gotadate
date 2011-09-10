@@ -22,6 +22,7 @@ import com.aperigeek.gotadate.token.TokenizerException;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -92,7 +93,7 @@ public class DateParserTest extends TestCase {
         List<Date> parsed = parser.getParsed();
         
         assertEquals(1, parsed.size());
-        assertEquals(new Date(0, 0, 1, 23, 10, 55), parsed.get(0));
+        assertEquals(new LocalTime(23, 10, 55).toDateTimeToday().toDate(), parsed.get(0));
     }
     
     public void testSimpleTimeNoSeconds() throws TokenizerException, DateParseException {
@@ -103,7 +104,7 @@ public class DateParserTest extends TestCase {
         List<Date> parsed = parser.getParsed();
         
         assertEquals(1, parsed.size());
-        assertEquals(new Date(0, 0, 1, 23, 10, 0), parsed.get(0));
+        assertEquals(new LocalTime(23, 10).toDateTimeToday().toDate(), parsed.get(0));
     }
     
 }
