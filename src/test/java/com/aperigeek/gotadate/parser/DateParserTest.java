@@ -22,6 +22,9 @@ import com.aperigeek.gotadate.token.TokenizerException;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 /**
@@ -105,6 +108,20 @@ public class DateParserTest extends TestCase {
         
         assertEquals(1, parsed.size());
         assertEquals(new LocalTime(23, 10).toDateTimeToday().toDate(), parsed.get(0));
+    }
+    
+    public void testSimpleTimeWithThen() throws TokenizerException, DateParseException {
+        String date = "23:10:55";
+        LocalDate then = new LocalDate(1988, 10, 23);
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then.toDate());
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55, DateTimeZone.getDefault()).toDate(), parsed.get(0));
     }
     
 }

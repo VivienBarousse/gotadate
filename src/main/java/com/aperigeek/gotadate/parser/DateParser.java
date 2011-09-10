@@ -25,8 +25,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.ReadableInstant;
 
 /**
  *
@@ -37,6 +41,10 @@ public class DateParser {
     private LookAheadTable next;
 
     private Token token;
+    
+    private DateTimeZone zone = DateTimeZone.getDefault();
+    
+    private ReadableInstant now = DateTime.now(zone);
 
     private List<Date> parsed = new ArrayList<Date>();
 
@@ -123,7 +131,7 @@ public class DateParser {
         }
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
-        parsed.add(time.toDateTimeToday().toDate());
+        parsed.add(time.toDateTime(now).toDate());
     }
     
     protected boolean isToken(char ch) {
@@ -175,6 +183,15 @@ public class DateParser {
 
     public List<Date> getParsed() {
         return Collections.unmodifiableList(parsed);
+    }
+
+    public Date getNow() {
+        return new Date(now.getMillis());
+    }
+
+    public void setNow(Date now) {
+        this.now = new DateTime().withMillis(now.getTime());
+        System.out.println(this.now);
     }
 
 }
