@@ -50,6 +50,14 @@ public class DateParser {
             throw new DateParseException("Unable to read from source", ex);
         }
     }
+    
+    protected Token lookahead(int i) throws DateParseException {
+        try {
+            return next.get(i);
+        } catch (TokenizerException ex) {
+            throw new DateParseException("Unable to read from source", ex);
+        }
+    }
 
     public void parse() throws DateParseException {
         if (token == null) {
@@ -58,7 +66,11 @@ public class DateParser {
         
         try {
             if (token.getType() == TokenType.NUMBER) {
-                parseDate();
+                if (isToken('/', lookahead(0))) {
+                    parseDate();
+                } else if (isToken(':', lookahead(0))) {
+                    parseTime();
+                }
             }
         } catch (UnexpectedTokenException ex) {
         }
@@ -95,6 +107,37 @@ public class DateParser {
 
         Date date = new Date(ls[2] - 1900, ls[1] - 1, ls[0]);
         parsed.add(date);
+    }
+    
+    protected void parseTime() throws DateParseException, UnexpectedTokenException {
+        int[] ls = new int[3];
+
+        ls[0] = getInt();
+        check(':');
+        ls[1] = getInt();
+        check(':');
+        ls[2] = getInt();
+
+        Date date = new Date(0, 0, 1, ls[0], ls[1], ls[2]);
+        parsed.add(date);
+    }
+    
+    protected boolean isToken(char ch) {
+        return isToken(ch, token);
+    }
+    
+    protected boolean isToken(char ch, Token token) {
+        if (token == null || token.getType() != TokenType.SEPARATOR) {
+            return false;
+        }
+        
+        Token<Character> t = token;
+        char actual = t.getValue();
+        if (actual != ch) {
+            return false;
+        }
+        
+        return true;
     }
 
     protected void check(char ch) throws UnexpectedTokenException, DateParseException {

@@ -84,4 +84,16 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(88, 9, 23), parsed.get(0));
     }
     
+    public void testSimpleTime() throws TokenizerException, DateParseException {
+        String date = "23:10:55";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(0, 0, 1, 23, 10, 55), parsed.get(0));
+    }
+    
+    
 }
