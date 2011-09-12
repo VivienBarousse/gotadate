@@ -124,4 +124,16 @@ public class DateParserTest extends TestCase {
         assertEquals(new DateTime(1988, 10, 23, 23, 10, 55, DateTimeZone.getDefault()).toDate(), parsed.get(0));
     }
     
+    public void testDateTime() throws TokenizerException, DateParseException {
+        String date = "23/10/1988 23:10:55";
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55, DateTimeZone.getDefault()).toDate(), parsed.get(0));
+    }
+    
 }

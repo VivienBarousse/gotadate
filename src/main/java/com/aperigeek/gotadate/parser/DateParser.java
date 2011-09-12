@@ -78,7 +78,8 @@ public class DateParser {
                 if (isToken('/', lookahead(0))) {
                     parseDate();
                 } else if (isTime()) {
-                    parseTime();
+                    LocalTime time = parseTime();
+                    parsed.add(time.toDateTime(now).toDate());
                 }
             }
         } catch (UnexpectedTokenException ex) {
@@ -115,10 +116,16 @@ public class DateParser {
         }
 
         LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
-        parsed.add(date.toDate());
+        
+        if (!isTime()) {
+            parsed.add(date.toDate());
+        } else {
+            LocalTime time = parseTime();
+            parsed.add(date.toDateTime(time).toDate());
+        }
     }
     
-    protected void parseTime() throws DateParseException, UnexpectedTokenException {
+    protected LocalTime parseTime() throws DateParseException, UnexpectedTokenException {
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -130,11 +137,12 @@ public class DateParser {
         }
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
-        parsed.add(time.toDateTime(now).toDate());
+        return time;
     }
     
     protected boolean isTime() throws DateParseException {
-        return token.getType() == TokenType.NUMBER
+        return token != null &&
+                token.getType() == TokenType.NUMBER
                 && isToken(':', lookahead(0));
     }
     
