@@ -135,6 +135,13 @@ public class DateParser {
             check(':');
             ls[2] = getInt();
         }
+        
+        if (isToken("AM")) {
+            next();
+        } else if (isToken("PM")) {
+            ls[0] = (ls[0] % 12) + 12;
+            next();
+        }
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
         return time;
@@ -158,6 +165,24 @@ public class DateParser {
         Token<Character> t = token;
         char actual = t.getValue();
         if (actual != ch) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    protected boolean isToken(String s) {
+        return isToken(s, token);
+    }
+    
+    protected boolean isToken(String s, Token token) {
+        if (token == null || token.getType() != TokenType.STRING) {
+            return false;
+        }
+        
+        Token<String> t = token;
+        String actual = t.getValue();
+        if (!actual.equals(s)) {
             return false;
         }
         
