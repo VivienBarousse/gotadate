@@ -69,35 +69,32 @@ public class DateParser {
     }
 
     public void parse() throws DateParseException {
-        if (token == null) {
-            return;
+        while (token != null) {
+            LocalDate date = null;
+            LocalTime time = null;
+            try {
+                if (isDate()) {
+                    date = parseDate();
+                }
+                if (isTime()) {
+                    time = parseTime();
+                }
+                if (date == null && isDate()) {
+                    date = parseDate();
+                }
+            } catch (UnexpectedTokenException ex) {
+            } finally {
+                if (time != null) {
+                    ReadableInstant ref =
+                            (date == null) ? now : date.toDateMidnight();
+                    DateTime dt = time.toDateTime(ref);
+                    parsed.add(dt.toDate());
+                } else if (date != null) {
+                    parsed.add(date.toDate());
+                }
+            }
+            next();
         }
-
-        LocalDate date = null;
-        LocalTime time = null;
-        try {
-            if (isDate()) {
-                date = parseDate();
-            }
-            if (isTime()) {
-                time = parseTime();
-            }
-            if (date == null && isDate()) {
-                date = parseDate();
-            }
-        } catch (UnexpectedTokenException ex) {
-        } finally {
-            if (time != null) {
-                ReadableInstant ref = date == null ? now : date.toDateMidnight();
-                DateTime dt = time.toDateTime(ref);
-                parsed.add(dt.toDate());
-            } else if (date != null) {
-                parsed.add(date.toDate());
-            }
-        }
-
-        next();
-        parse();
     }
 
     /**
@@ -111,7 +108,8 @@ public class DateParser {
      * The parser tries to determine which value is the day, the month and
      * the year.
      */
-    protected LocalDate parseDate() throws DateParseException, UnexpectedTokenException {
+    protected LocalDate parseDate() throws DateParseException,
+                                           UnexpectedTokenException {
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -130,7 +128,8 @@ public class DateParser {
         return date;
     }
 
-    protected LocalTime parseTime() throws DateParseException, UnexpectedTokenException {
+    protected LocalTime parseTime() throws DateParseException,
+                                           UnexpectedTokenException {
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -200,7 +199,8 @@ public class DateParser {
         return true;
     }
 
-    protected void check(char ch) throws UnexpectedTokenException, DateParseException {
+    protected void check(char ch) throws UnexpectedTokenException,
+                                         DateParseException {
         doCheckType(TokenType.SEPARATOR);
 
         Character chVal = (Character) token.getValue();
@@ -210,18 +210,21 @@ public class DateParser {
         next();
     }
 
-    protected void checkType(TokenType type) throws DateParseException, UnexpectedTokenException {
+    protected void checkType(TokenType type) throws DateParseException,
+                                                    UnexpectedTokenException {
         doCheckType(type);
         next();
     }
 
-    protected void doCheckType(TokenType type) throws UnexpectedTokenException {
+    protected void doCheckType(TokenType type)
+            throws UnexpectedTokenException {
         if (token == null || token.getType() != type) {
             throw new UnexpectedTokenException();
         }
     }
 
-    protected int getInt() throws DateParseException, UnexpectedTokenException {
+    protected int getInt() throws DateParseException,
+                                  UnexpectedTokenException {
         doCheckType(TokenType.NUMBER);
 
         Number nbValue = (Number) token.getValue();
