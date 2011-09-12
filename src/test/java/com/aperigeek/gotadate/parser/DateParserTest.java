@@ -33,6 +33,16 @@ import org.joda.time.LocalTime;
  */
 public class DateParserTest extends TestCase {
     
+    public void testSimpleNumber() throws TokenizerException, DateParseException {
+        String date = "23";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(0, parsed.size());
+    }
+    
     public void testSimpleDate() throws TokenizerException, DateParseException {
         String date = "23/10/1988";
         DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
@@ -177,6 +187,17 @@ public class DateParserTest extends TestCase {
         
         assertEquals(1, parsed.size());
         assertEquals(new LocalTime(23, 10).toDateTimeToday().toDate(), parsed.get(0));
+    }
+    
+    public void testSimpleTimePMNoSecondsOrMinutes() throws TokenizerException, DateParseException {
+        String date = "11 PM";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalTime(23, 0).toDateTimeToday().toDate(), parsed.get(0));
     }
     
     public void testDateTime() throws TokenizerException, DateParseException {

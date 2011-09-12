@@ -169,8 +169,10 @@ public class DateParser {
         int[] ls = new int[3];
 
         ls[0] = getInt();
-        check(':');
-        ls[1] = getInt();
+        if (isToken(':')) {
+            check(':');
+            ls[1] = getInt();
+        }
         if (isToken(':')) {
             check(':');
             ls[2] = getInt();
@@ -218,7 +220,9 @@ public class DateParser {
     protected boolean isTime() throws DateParseException {
         return token != null
                 && token.getType() == TokenType.NUMBER
-                && isToken(':', lookahead(0));
+                && (isToken(':', lookahead(0)) ||
+                isToken("PM", lookahead(0)) ||
+                isToken("AM", lookahead(0)));
     }
 
     protected boolean isToken(char ch) {
