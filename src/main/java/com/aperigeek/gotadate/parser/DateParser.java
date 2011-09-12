@@ -77,7 +77,7 @@ public class DateParser {
             if (token.getType() == TokenType.NUMBER) {
                 if (isToken('/', lookahead(0))) {
                     parseDate();
-                } else if (isToken(':', lookahead(0))) {
+                } else if (isTime()) {
                     parseTime();
                 }
             }
@@ -131,6 +131,11 @@ public class DateParser {
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
         parsed.add(time.toDateTime(now).toDate());
+    }
+    
+    protected boolean isTime() throws DateParseException {
+        return token.getType() == TokenType.NUMBER
+                && isToken(':', lookahead(0));
     }
     
     protected boolean isToken(char ch) {
