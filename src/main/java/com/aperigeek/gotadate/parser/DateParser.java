@@ -24,7 +24,9 @@ import com.aperigeek.gotadate.token.TokenizerException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -46,6 +48,33 @@ public class DateParser {
     private ReadableInstant now = DateTime.now(zone);
 
     private List<Date> parsed = new ArrayList<Date>();
+    
+    private Map<String, Integer> MONTHS_MAP = new HashMap<String, Integer>() {{
+        put("January", 1);
+        put("Jan", 1);
+        put("February", 2);
+        put("Feb", 2);
+        put("March", 3);
+        put("Mar", 3);
+        put("April", 4);
+        put("Apr", 4);
+        put("May", 5);
+        put("June", 6);
+        put("Jun", 6);
+        put("July", 7);
+        put("Jul", 7);
+        put("August", 8);
+        put("Aug", 8);
+        put("September", 9);
+        put("Sept", 9);
+        put("Sep", 9);
+        put("October", 10);
+        put("Oct", 10);
+        put("November", 11);
+        put("Nov", 11);
+        put("December", 12);
+        put("Dec", 12);
+    }};
 
     public DateParser(DateTokenizer tokenizer) throws DateParseException {
         this.next = new LookAheadTable(tokenizer);
@@ -113,10 +142,17 @@ public class DateParser {
         int[] ls = new int[3];
 
         ls[0] = getInt();
-        check('/');
-        ls[1] = getInt();
-        check('/');
-        ls[2] = getInt();
+        if (isToken('/')) {
+            check('/');
+            ls[1] = getInt();
+            check('/');
+            ls[2] = getInt();
+        } else if (isMonthName(token)) {
+            ls[1] = getMonth();
+            ls[2] = getInt();
+        } else {
+            throw new UnexpectedTokenException();
+        }
 
         if (ls[1] > 12 && ls[0] <= 12) {
             int tmp = ls[1];
@@ -160,11 +196,23 @@ public class DateParser {
             return false;
         }
         
-        if (!isToken('/', lookahead(0))) {
+        if (isToken('/', lookahead(0))) {
+            return true;
+        } else if (isMonthName(lookahead(0))) {
+            return true;
+        } else {
             return false;
         }
+    }
+    
+    protected boolean isMonthName(Token t) {
+        if (t != null && 
+                t.getType() == TokenType.STRING &&
+                MONTHS_MAP.containsKey(t.getValue())) {
+            return true;
+        }
         
-        return true;
+        return false;
     }
 
     protected boolean isTime() throws DateParseException {
@@ -240,6 +288,15 @@ public class DateParser {
         Number nbValue = (Number) token.getValue();
         next();
         return nbValue.intValue();
+    }
+    
+    protected int getMonth() throws UnexpectedTokenException, 
+                                    DateParseException {
+        doCheckType(TokenType.STRING);
+
+        String value = (String) token.getValue();
+        next();
+        return MONTHS_MAP.get(value);
     }
 
     public List<Date> getParsed() {
