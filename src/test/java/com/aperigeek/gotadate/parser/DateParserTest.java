@@ -44,6 +44,17 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(88, 9, 23), parsed.get(0));
     }
     
+    public void testSimpleDateFollowedByInvalidDate() throws TokenizerException, DateParseException {
+        String date = "23/10/1988 23:abc";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
     public void testDateWithTextBefore() throws TokenizerException, DateParseException {
         String date = "abc def 23/10/1988";
         DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));

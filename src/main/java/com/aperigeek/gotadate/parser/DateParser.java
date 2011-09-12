@@ -73,26 +73,27 @@ public class DateParser {
             return;
         }
 
+        LocalDate date = null;
+        LocalTime time = null;
         try {
-            LocalDate date = null;
             if (isDate()) {
                 date = parseDate();
             }
             if (isTime()) {
-                LocalTime time = parseTime();
-                ReadableInstant ref = date != null ? date.toDateMidnight() : now;
-                if (date == null && isDate()) {
-                    try {
-                        ref = parseDate().toDateMidnight();
-                    } catch (UnexpectedTokenException ex) {
-                    }
-                }
+                time = parseTime();
+            }
+            if (date == null && isDate()) {
+                date = parseDate();
+            }
+        } catch (UnexpectedTokenException ex) {
+        } finally {
+            if (time != null) {
+                ReadableInstant ref = date == null ? now : date.toDateMidnight();
                 DateTime dt = time.toDateTime(ref);
                 parsed.add(dt.toDate());
             } else if (date != null) {
                 parsed.add(date.toDate());
             }
-        } catch (UnexpectedTokenException ex) {
         }
 
         next();
