@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.ReadableInstant;
@@ -191,7 +190,6 @@ public class DateParser {
 
     public void setNow(Date now) {
         this.now = new DateTime().withMillis(now.getTime());
-        System.out.println(this.now);
     }
 
 }
