@@ -152,9 +152,19 @@ public class DateParser {
     }
 
     protected boolean isDate() throws DateParseException {
-        return token != null
-                && token.getType() == TokenType.NUMBER
-                && isToken('/', lookahead(0));
+        if (token == null) {
+            return false;
+        }
+        
+        if (token.getType() != TokenType.NUMBER) {
+            return false;
+        }
+        
+        if (!isToken('/', lookahead(0))) {
+            return false;
+        }
+        
+        return true;
     }
 
     protected boolean isTime() throws DateParseException {
