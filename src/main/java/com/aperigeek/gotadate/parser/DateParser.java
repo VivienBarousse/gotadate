@@ -40,9 +40,9 @@ public class DateParser {
     private LookAheadTable next;
 
     private Token token;
-    
+
     private DateTimeZone zone = DateTimeZone.getDefault();
-    
+
     private ReadableInstant now = DateTime.now(zone);
 
     private List<Date> parsed = new ArrayList<Date>();
@@ -59,7 +59,7 @@ public class DateParser {
             throw new DateParseException("Unable to read from source", ex);
         }
     }
-    
+
     protected Token lookahead(int i) throws DateParseException {
         try {
             return next.get(i);
@@ -72,7 +72,7 @@ public class DateParser {
         if (token == null) {
             return;
         }
-        
+
         try {
             LocalDate date = null;
             if (isDate()) {
@@ -81,6 +81,12 @@ public class DateParser {
             if (isTime()) {
                 LocalTime time = parseTime();
                 ReadableInstant ref = date != null ? date.toDateMidnight() : now;
+                if (date == null && isDate()) {
+                    try {
+                        ref = parseDate().toDateMidnight();
+                    } catch (UnexpectedTokenException ex) {
+                    }
+                }
                 DateTime dt = time.toDateTime(ref);
                 parsed.add(dt.toDate());
             } else if (date != null) {
@@ -88,7 +94,7 @@ public class DateParser {
             }
         } catch (UnexpectedTokenException ex) {
         }
-        
+
         next();
         parse();
     }
@@ -122,7 +128,7 @@ public class DateParser {
         LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
         return date;
     }
-    
+
     protected LocalTime parseTime() throws DateParseException, UnexpectedTokenException {
         int[] ls = new int[3];
 
@@ -133,7 +139,7 @@ public class DateParser {
             check(':');
             ls[2] = getInt();
         }
-        
+
         if (isToken("AM")) {
             next();
         } else if (isToken("PM")) {
@@ -144,52 +150,52 @@ public class DateParser {
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
         return time;
     }
-    
+
     protected boolean isDate() throws DateParseException {
-        return token != null &&
-                token.getType() == TokenType.NUMBER
+        return token != null
+                && token.getType() == TokenType.NUMBER
                 && isToken('/', lookahead(0));
     }
-    
+
     protected boolean isTime() throws DateParseException {
-        return token != null &&
-                token.getType() == TokenType.NUMBER
+        return token != null
+                && token.getType() == TokenType.NUMBER
                 && isToken(':', lookahead(0));
     }
-    
+
     protected boolean isToken(char ch) {
         return isToken(ch, token);
     }
-    
+
     protected boolean isToken(char ch, Token token) {
         if (token == null || token.getType() != TokenType.SEPARATOR) {
             return false;
         }
-        
+
         Token<Character> t = token;
         char actual = t.getValue();
         if (actual != ch) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     protected boolean isToken(String s) {
         return isToken(s, token);
     }
-    
+
     protected boolean isToken(String s, Token token) {
         if (token == null || token.getType() != TokenType.STRING) {
             return false;
         }
-        
+
         Token<String> t = token;
         String actual = t.getValue();
         if (!actual.equals(s)) {
             return false;
         }
-        
+
         return true;
     }
 
