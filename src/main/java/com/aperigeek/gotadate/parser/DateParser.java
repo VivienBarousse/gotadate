@@ -74,13 +74,17 @@ public class DateParser {
         }
         
         try {
-            if (token.getType() == TokenType.NUMBER) {
-                if (isToken('/', lookahead(0))) {
-                    parseDate();
-                } else if (isTime()) {
-                    LocalTime time = parseTime();
-                    parsed.add(time.toDateTime(now).toDate());
-                }
+            LocalDate date = null;
+            if (isDate()) {
+                date = parseDate();
+            }
+            if (isTime()) {
+                LocalTime time = parseTime();
+                ReadableInstant ref = date != null ? date.toDateMidnight() : now;
+                DateTime dt = time.toDateTime(ref);
+                parsed.add(dt.toDate());
+            } else if (date != null) {
+                parsed.add(date.toDate());
             }
         } catch (UnexpectedTokenException ex) {
         }
@@ -100,7 +104,7 @@ public class DateParser {
      * The parser tries to determine which value is the day, the month and
      * the year.
      */
-    protected void parseDate() throws DateParseException, UnexpectedTokenException {
+    protected LocalDate parseDate() throws DateParseException, UnexpectedTokenException {
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -116,13 +120,7 @@ public class DateParser {
         }
 
         LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
-        
-        if (!isTime()) {
-            parsed.add(date.toDate());
-        } else {
-            LocalTime time = parseTime();
-            parsed.add(date.toDateTime(time).toDate());
-        }
+        return date;
     }
     
     protected LocalTime parseTime() throws DateParseException, UnexpectedTokenException {
@@ -145,6 +143,12 @@ public class DateParser {
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
         return time;
+    }
+    
+    protected boolean isDate() throws DateParseException {
+        return token != null &&
+                token.getType() == TokenType.NUMBER
+                && isToken('/', lookahead(0));
     }
     
     protected boolean isTime() throws DateParseException {
