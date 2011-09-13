@@ -231,11 +231,21 @@ public class DateParser {
     }
 
     protected boolean isTime() throws DateParseException {
-        return token != null
-                && token.getType() == TokenType.NUMBER
-                && (isToken(':', lookahead(0)) ||
+        if (token == null) {
+            return false;
+        }
+        
+        if (token.getType() != TokenType.NUMBER) {
+            return false;
+        }
+        
+        if (isToken(':', lookahead(0)) ||
                 isToken("PM", lookahead(0)) ||
-                isToken("AM", lookahead(0)));
+                isToken("AM", lookahead(0))) {
+            return true;
+        }
+        
+        return false;
     }
 
     protected boolean isToken(char ch) {
