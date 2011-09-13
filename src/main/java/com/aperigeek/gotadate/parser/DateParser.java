@@ -104,12 +104,18 @@ public class DateParser {
             try {
                 if (isDate()) {
                     date = parseDate();
+                } else if (isRelativeDate()) {
+                    date = parseRelativeDate();
                 }
                 if (isTime()) {
                     time = parseTime();
                 }
-                if (date == null && isDate()) {
-                    date = parseDate();
+                if (date == null) {
+                    if (isDate()) {
+                        date = parseDate();
+                    } else if (isRelativeDate()) {
+                        date = parseRelativeDate();
+                    }
                 }
             } catch (UnexpectedTokenException ex) {
             } finally {
@@ -139,15 +145,6 @@ public class DateParser {
      */
     protected LocalDate parseDate() throws DateParseException,
                                            UnexpectedTokenException {
-        // Human-like strings
-        if (isToken("yesterday")) {
-            next();
-            return now.minusDays(1).toLocalDate();
-        } else if (isToken("tomorrow")) {
-            next();
-            return now.plusDays(1).toLocalDate();
-        }
-        
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -171,6 +168,19 @@ public class DateParser {
 
         LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
         return date;
+    }
+    
+    protected LocalDate parseRelativeDate() throws DateParseException, 
+                                                   UnexpectedTokenException {
+        if (isToken("yesterday")) {
+            next();
+            return now.minusDays(1).toLocalDate();
+        } else if (isToken("tomorrow")) {
+            next();
+            return now.plusDays(1).toLocalDate();
+        }
+        
+        throw new UnexpectedTokenException();
     }
 
     protected LocalTime parseTime() throws DateParseException,
@@ -208,12 +218,6 @@ public class DateParser {
             return false;
         }
         
-        // Human-like tokens
-        if (isToken("yesterday") ||
-                isToken("tomorrow")) {
-            return true;
-        }
-        
         if (token.getType() != TokenType.NUMBER) {
             return false;
         }
@@ -225,6 +229,15 @@ public class DateParser {
         } else {
             return false;
         }
+    }
+    
+    protected boolean isRelativeDate() {
+        if (isToken("yesterday") ||
+                isToken("tomorrow")) {
+            return true;
+        }
+        
+        return false;
     }
     
     protected boolean isMonthName(Token t) {
