@@ -228,6 +228,17 @@ public class DateParserTest extends TestCase {
         assertEquals(new LocalTime(23, 0).toDateTimeToday().toDate(), parsed.get(0));
     }
     
+    public void testTimeSingleNumberWithAt() throws TokenizerException, DateParseException {
+        String date = "at 11";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalTime(11, 0).toDateTimeToday().toDate(), parsed.get(0));
+    }
+    
     public void testDateTime() throws TokenizerException, DateParseException {
         String date = "23/10/1988 23:10:55";
         
