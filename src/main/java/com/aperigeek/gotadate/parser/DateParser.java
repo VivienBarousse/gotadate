@@ -45,7 +45,7 @@ public class DateParser {
 
     private DateTimeZone zone = DateTimeZone.getDefault();
 
-    private ReadableInstant now = DateTime.now(zone);
+    private DateTime now = DateTime.now(zone);
 
     private List<Date> parsed = new ArrayList<Date>();
     
