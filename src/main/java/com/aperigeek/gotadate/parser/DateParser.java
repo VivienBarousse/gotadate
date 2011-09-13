@@ -142,6 +142,8 @@ public class DateParser {
         // Human-like strings
         if (isToken("yesterday")) {
             return now.minusDays(1).toLocalDate();
+        } else if (isToken("tomorrow")) {
+            return now.plusDays(1).toLocalDate();
         }
         
         int[] ls = new int[3];
@@ -200,7 +202,8 @@ public class DateParser {
         }
         
         // Human-like tokens
-        if (isToken("yesterday")) {
+        if (isToken("yesterday") ||
+                isToken("tomorrow")) {
             return true;
         }
         
