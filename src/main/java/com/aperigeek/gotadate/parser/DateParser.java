@@ -139,6 +139,11 @@ public class DateParser {
      */
     protected LocalDate parseDate() throws DateParseException,
                                            UnexpectedTokenException {
+        // Human-like strings
+        if (isToken("yesterday")) {
+            return now.minusDays(1).toLocalDate();
+        }
+        
         int[] ls = new int[3];
 
         ls[0] = getInt();
@@ -192,6 +197,11 @@ public class DateParser {
     protected boolean isDate() throws DateParseException {
         if (token == null) {
             return false;
+        }
+        
+        // Human-like tokens
+        if (isToken("yesterday")) {
+            return true;
         }
         
         if (token.getType() != TokenType.NUMBER) {

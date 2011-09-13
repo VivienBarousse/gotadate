@@ -120,6 +120,20 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(88, 9, 23), parsed.get(0));
     }
     
+    public void testDateYesterday() throws TokenizerException, DateParseException {
+        String date = "yesterday";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalDate(1988, 10, 22).toDate(), parsed.get(0));
+    }
+    
     public void testSimpleTime() throws TokenizerException, DateParseException {
         String date = "23:10:55";
         DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
