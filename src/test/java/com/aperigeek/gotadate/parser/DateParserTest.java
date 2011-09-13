@@ -237,7 +237,7 @@ public class DateParserTest extends TestCase {
         List<Date> parsed = parser.getParsed();
         
         assertEquals(1, parsed.size());
-        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55, DateTimeZone.getDefault()).toDate(), parsed.get(0));
+        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55).toDate(), parsed.get(0));
     }
     
     public void testTimeDate() throws TokenizerException, DateParseException {
@@ -249,7 +249,21 @@ public class DateParserTest extends TestCase {
         List<Date> parsed = parser.getParsed();
         
         assertEquals(1, parsed.size());
-        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55, DateTimeZone.getDefault()).toDate(), parsed.get(0));
+        assertEquals(new DateTime(1988, 10, 23, 23, 10, 55).toDate(), parsed.get(0));
+    }
+    
+    public void testDateTimeAt() throws TokenizerException, DateParseException {
+        String date = "tomorrow at 6 PM";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new DateTime(1988, 10, 24, 18, 0).toDate(), parsed.get(0));
     }
     
 }
