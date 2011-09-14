@@ -115,6 +115,8 @@ public class DateParser {
                     date = parseDate();
                 } else if (isRelativeDate()) {
                     date = parseRelativeDate();
+                } else if (isMonthName(token)) {
+                    date = parseDateMonthFirst();
                 }
                 if (isTime()) {
                     time = parseTime();
@@ -124,6 +126,8 @@ public class DateParser {
                         date = parseDate();
                     } else if (isRelativeDate()) {
                         date = parseRelativeDate();
+                    } else if (isMonthName(token)) {
+                        date = parseDateMonthFirst();
                     }
                 }
             } catch (UnexpectedTokenException ex) {
@@ -200,6 +204,35 @@ public class DateParser {
         }
         
         throw new UnexpectedTokenException();
+    }
+    
+    protected LocalDate parseDateMonthFirst() throws DateParseException, 
+                                                   UnexpectedTokenException {
+        
+        int[] ls = new int[3];
+        
+        ls[1] = MONTHS_MAP.get(token.getValue());
+        next();
+        
+        ls[0] = getInt();
+        
+        if (isOrdinal(token)) {
+            next();
+        }
+        if (isToken(',')) {
+            next();
+        }
+        
+        if (isTokenType(TokenType.NUMBER)) {
+            ls[2] = getInt();
+        }
+        
+        if (ls[2] == 0) {
+            ls[2] = now.getYear();
+        }
+        
+        LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
+        return date;
     }
 
     protected LocalTime parseTime() throws DateParseException,

@@ -135,6 +135,42 @@ public class DateParserTest extends TestCase {
         assertEquals(new Date(88, 9, 23), parsed.get(0));
     }
     
+    public void testDateFullMonthFirst() throws TokenizerException, DateParseException {
+        String date = "October 23 1988";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testDateFullMonthFirstWithComma() throws TokenizerException, DateParseException {
+        String date = "October 23, 1988";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testDateFullMonthFirstNoYear() throws TokenizerException, DateParseException {
+        String date = "October 23rd";
+        Date then = new LocalDate(1988, 1, 1).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
     public void testDateOrdinalFullMonthNoYear() throws TokenizerException, DateParseException {
         String date = "23rd October";
         Date then = new LocalDate(1988, 1, 1).toDate();
