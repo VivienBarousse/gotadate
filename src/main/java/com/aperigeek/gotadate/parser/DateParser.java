@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -74,6 +76,13 @@ public class DateParser {
         put("Nov", 11);
         put("December", 12);
         put("Dec", 12);
+    }};
+    
+    private Set<String> ORDINALS_SET = new HashSet<String>() {{
+        add("st");
+        add("nd");
+        add("rd");
+        add("th");
     }};
 
     public DateParser(DateTokenizer tokenizer) throws DateParseException {
@@ -148,6 +157,10 @@ public class DateParser {
         int[] ls = new int[3];
 
         ls[0] = getInt();
+        if (isOrdinal(token)) {
+            next();
+        }
+        
         if (isToken('/')) {
             check('/');
             ls[1] = getInt();
@@ -242,6 +255,8 @@ public class DateParser {
             return true;
         } else if (isMonthName(lookahead(0))) {
             return true;
+        } else if (isOrdinal(lookahead(0))) {
+            return true;
         } else {
             return false;
         }
@@ -250,6 +265,16 @@ public class DateParser {
     protected boolean isRelativeDate() {
         if (isToken("yesterday") ||
                 isToken("tomorrow")) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    protected boolean isOrdinal(Token t) {
+        if (t != null &&
+                t.getType() == TokenType.STRING &&
+                ORDINALS_SET.contains(t.getValue())) {
             return true;
         }
         
