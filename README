@@ -1,0 +1,7 @@
+gotadate
+
+Got a date? Automatic date detection in text streams.
+
+The aim of this project is to detect automatically dates in a text
+stream. Dates can be either well formed dates, as in "23/10/1988" ; or
+dates as human would format them in a typical email, as in "tomorrow at 2".
