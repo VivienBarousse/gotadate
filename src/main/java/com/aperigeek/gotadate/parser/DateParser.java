@@ -185,8 +185,11 @@ public class DateParser {
 
     protected LocalTime parseTime() throws DateParseException,
                                            UnexpectedTokenException {
+        boolean desambiguate = false;
+        
         // Skip the "at", which is used only to denote a date
         if (isToken("at")) {
+            desambiguate = true;
             next();
         }
         
@@ -200,13 +203,20 @@ public class DateParser {
         if (isToken(':')) {
             check(':');
             ls[2] = getInt();
+            desambiguate = false;
         }
 
         if (isToken("AM")) {
             next();
+            desambiguate = false;
         } else if (isToken("PM")) {
             ls[0] = (ls[0] % 12) + 12;
             next();
+            desambiguate = false;
+        }
+        
+        if (desambiguate && ls[0] <= 7) {
+            ls[0] += 12;
         }
 
         LocalTime time = new LocalTime(ls[0], ls[1], ls[2]);
