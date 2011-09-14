@@ -25,6 +25,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 /**
@@ -113,6 +114,20 @@ public class DateParserTest extends TestCase {
         String date = "23 October 1988";
         DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
         DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new Date(88, 9, 23), parsed.get(0));
+    }
+    
+    public void testDateFullMonthNoYear() throws TokenizerException, DateParseException {
+        String date = "23 October";
+        Date then = new LocalDate(1988, 1, 1).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
         parser.parse();
         List<Date> parsed = parser.getParsed();
         

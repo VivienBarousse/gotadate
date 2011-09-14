@@ -155,7 +155,9 @@ public class DateParser {
             ls[2] = getInt();
         } else if (isMonthName(token)) {
             ls[1] = getMonth();
-            ls[2] = getInt();
+            if (isTokenType(TokenType.NUMBER)) {
+                ls[2] = getInt();
+            }
         } else {
             throw new UnexpectedTokenException();
         }
@@ -164,6 +166,10 @@ public class DateParser {
             int tmp = ls[1];
             ls[1] = ls[0];
             ls[0] = tmp;
+        }
+        
+        if (ls[2] == 0) {
+            ls[2] = now.getYear();
         }
 
         LocalDate date = new LocalDate(ls[2], ls[1], ls[0]);
@@ -316,6 +322,15 @@ public class DateParser {
         }
 
         return true;
+    }
+    
+    protected boolean isTokenType(TokenType type) {
+        try {
+            doCheckType(type);
+            return true;
+        } catch (UnexpectedTokenException ex) {
+            return false;
+        }
     }
 
     protected void check(char ch) throws UnexpectedTokenException,
