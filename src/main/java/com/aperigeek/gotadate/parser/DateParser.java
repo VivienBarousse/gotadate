@@ -52,30 +52,30 @@ public class DateParser {
     private List<Date> parsed = new ArrayList<Date>();
     
     private Map<String, Integer> MONTHS_MAP = new HashMap<String, Integer>() {{
-        put("January", 1);
-        put("Jan", 1);
-        put("February", 2);
-        put("Feb", 2);
-        put("March", 3);
-        put("Mar", 3);
-        put("April", 4);
-        put("Apr", 4);
-        put("May", 5);
-        put("June", 6);
-        put("Jun", 6);
-        put("July", 7);
-        put("Jul", 7);
-        put("August", 8);
-        put("Aug", 8);
-        put("September", 9);
-        put("Sept", 9);
-        put("Sep", 9);
-        put("October", 10);
-        put("Oct", 10);
-        put("November", 11);
-        put("Nov", 11);
-        put("December", 12);
-        put("Dec", 12);
+        put("january", 1);
+        put("jan", 1);
+        put("february", 2);
+        put("feb", 2);
+        put("march", 3);
+        put("mar", 3);
+        put("april", 4);
+        put("apr", 4);
+        put("may", 5);
+        put("june", 6);
+        put("jun", 6);
+        put("july", 7);
+        put("jul", 7);
+        put("august", 8);
+        put("aug", 8);
+        put("september", 9);
+        put("sept", 9);
+        put("sep", 9);
+        put("october", 10);
+        put("oct", 10);
+        put("november", 11);
+        put("nov", 11);
+        put("december", 12);
+        put("dec", 12);
     }};
     
     private Set<String> ORDINALS_SET = new HashSet<String>() {{
@@ -258,10 +258,10 @@ public class DateParser {
             desambiguate = false;
         }
 
-        if (isToken("AM")) {
+        if (isToken("am")) {
             next();
             desambiguate = false;
-        } else if (isToken("PM")) {
+        } else if (isToken("pm")) {
             ls[0] = (ls[0] % 12) + 12;
             next();
             desambiguate = false;
@@ -338,8 +338,8 @@ public class DateParser {
         }
         
         if (isToken(':', lookahead(0)) ||
-                isToken("PM", lookahead(0)) ||
-                isToken("AM", lookahead(0))) {
+                isToken("pm", lookahead(0)) ||
+                isToken("am", lookahead(0))) {
             return true;
         }
         

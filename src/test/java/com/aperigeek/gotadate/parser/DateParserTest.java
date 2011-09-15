@@ -199,6 +199,34 @@ public class DateParserTest extends TestCase {
         assertEquals(new LocalDate(1988, 10, 22).toDate(), parsed.get(0));
     }
     
+    public void testDateYesterdayCaseUnsensitive() throws TokenizerException, DateParseException {
+        String date = "Yesterday";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalDate(1988, 10, 22).toDate(), parsed.get(0));
+    }
+    
+    public void testDateYesterdayCaseUnsensitive2() throws TokenizerException, DateParseException {
+        String date = "YESTERDAY";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalDate(1988, 10, 22).toDate(), parsed.get(0));
+    }
+    
     public void testDateTomorrow() throws TokenizerException, DateParseException {
         String date = "tomorrow";
         Date then = new LocalDate(1988, 10, 23).toDate();
@@ -262,6 +290,17 @@ public class DateParserTest extends TestCase {
     
     public void testSimpleTimePM() throws TokenizerException, DateParseException {
         String date = "11:10:55 PM";
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new LocalTime(23, 10, 55).toDateTimeToday().toDate(), parsed.get(0));
+    }
+    
+    public void testSimpleTimePMCaseUnsensitive() throws TokenizerException, DateParseException {
+        String date = "11:10:55 pm";
         DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
         DateParser parser = new DateParser(tokenizer);
         parser.parse();

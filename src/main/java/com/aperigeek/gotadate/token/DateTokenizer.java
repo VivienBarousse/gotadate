@@ -106,7 +106,7 @@ public class DateTokenizer implements Tokenizer {
                 // Continue, will fail at next call
             }
 
-            Object value = builder.toString();
+            Object value = builder.toString().toLowerCase();
             if (type == TokenType.NUMBER) {
                 Integer intValue = Integer.valueOf(value.toString());
                 return new Token<Number>(type, intValue, tokenLine, tokenCol);
