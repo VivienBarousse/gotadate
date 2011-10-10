@@ -201,6 +201,11 @@ public class DateParser {
         } else if (isToken("tomorrow")) {
             next();
             return now.plusDays(1).toLocalDate();
+        } else if (token.getType() == TokenType.NUMBER) {
+            int val = getInt();
+            check("days"); // 'days' is the only supported unit yet
+            check("ago"); // 'ago' is the only supported time indicator yet
+            return now.minusDays(val).toLocalDate();
         }
         
         throw new UnexpectedTokenException();
@@ -295,9 +300,17 @@ public class DateParser {
         }
     }
     
-    protected boolean isRelativeDate() {
+    protected boolean isRelativeDate() throws DateParseException {
+        if (token == null) {
+            return false;
+        }
+        
         if (isToken("yesterday") ||
                 isToken("tomorrow")) {
+            return true;
+        } else if (token.getType() == TokenType.NUMBER
+                && isToken("days", lookahead(0)) 
+                && isToken("ago", lookahead(1))) {
             return true;
         }
         
@@ -397,6 +410,17 @@ public class DateParser {
 
         Character chVal = (Character) token.getValue();
         if (ch != chVal) {
+            throw new UnexpectedTokenException();
+        }
+        next();
+    }
+
+    protected void check(String str) throws UnexpectedTokenException,
+                                         DateParseException {
+        doCheckType(TokenType.STRING);
+
+        String strVal = (String) token.getValue();
+        if (!strVal.equals(str)) {
             throw new UnexpectedTokenException();
         }
         next();

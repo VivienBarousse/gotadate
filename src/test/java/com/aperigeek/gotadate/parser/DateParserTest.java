@@ -451,4 +451,32 @@ public class DateParserTest extends TestCase {
         assertEquals(new DateTime(1988, 10, 24, 9, 0).toDate(), parsed.get(0));
     }
     
+    public void testDateRelativeDaysAgo() throws TokenizerException, DateParseException {
+        String date = "2 days ago";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new DateTime(1988, 10, 21, 0, 0).toDate(), parsed.get(0));
+    }
+    
+    public void testDateRelativeDaysWithTime() throws TokenizerException, DateParseException {
+        String date = "2 days ago at 9";
+        Date then = new LocalDate(1988, 10, 23).toDate();
+        
+        DateTokenizer tokenizer = new DateTokenizer(new StringReader(date));
+        DateParser parser = new DateParser(tokenizer);
+        parser.setNow(then);
+        parser.parse();
+        List<Date> parsed = parser.getParsed();
+        
+        assertEquals(1, parsed.size());
+        assertEquals(new DateTime(1988, 10, 21, 9, 0).toDate(), parsed.get(0));
+    }
+    
 }
